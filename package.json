@@ -1,0 +1,22 @@
+{
+  "name": "wanikani",
+  "version": "1.0.0",
+  "description": "Adding functionality to WaniKani",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexisZam/wanikani.git"
+  },
+  "keywords": [
+    "wanikani"
+  ],
+  "author": "AlexisZam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlexisZam/wanikani/issues"
+  },
+  "homepage": "https://github.com/AlexisZam/wanikani#readme"
+}
