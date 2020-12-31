@@ -1,10 +1,10 @@
 {
   "name": "wanikani",
   "version": "1.0.0",
-  "description": "Adding functionality to WaniKani",
-  "main": "index.js",
+  "description": "Be notified when WaniKani reviews are available",
+  "main": "index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node -r dotenv/config index.mjs"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,17 @@
   "bugs": {
     "url": "https://github.com/AlexisZam/wanikani/issues"
   },
-  "homepage": "https://github.com/AlexisZam/wanikani#readme"
+  "homepage": "https://github.com/AlexisZam/wanikani#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
+    "nodemailer": "^6.4.17",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.16.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-import": "^2.22.1"
+  }
 }
