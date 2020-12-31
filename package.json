@@ -1,5 +1,5 @@
 {
-  "name": "wanikani",
+  "name": "wanikani-reviews",
   "version": "1.0.0",
   "description": "Be notified when WaniKani reviews are available",
   "main": "index.mjs",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlexisZam/wanikani.git"
+    "url": "git+https://github.com/AlexisZam/wanikani-reviews.git"
   },
   "keywords": [
     "wanikani"
@@ -16,9 +16,9 @@
   "author": "AlexisZam",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AlexisZam/wanikani/issues"
+    "url": "https://github.com/AlexisZam/wanikani-reviews/issues"
   },
-  "homepage": "https://github.com/AlexisZam/wanikani#readme",
+  "homepage": "https://github.com/AlexisZam/wanikani-reviews#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
