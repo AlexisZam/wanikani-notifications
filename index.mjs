@@ -30,7 +30,7 @@ const logger = winston.createLogger({
 
   data = fs.readFileSync(SUBJECT_IDS_PATH);
   const previousSubjectIds = JSON.parse(data);
-  logger.info("Previous subject ids", data);
+  logger.info(`Previous subject ids ${data}`);
 
   const response = await axios({
     url: "https://api.wanikani.com/v2/summary",
