@@ -1,2 +1,2 @@
 # wanikani
-Adding functionality to WaniKani
+Be notified when WaniKani reviews are available
