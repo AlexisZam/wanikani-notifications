@@ -46,7 +46,10 @@ const logger = winston.createLogger({
   ) {
     fs.writeFileSync(SUBJECT_IDS_PATH, data);
 
-    const mail = nodemailer.createTransport({ sendmail: true });
+    const mail = nodemailer.createTransport({
+      sendmail: true,
+      path: "/usr/sbin/sendmail",
+    });
     const info = await mail.sendMail({ to: MAIL_TO, subject: MAIL_SUBJECT });
     data = JSON.stringify(info);
     logger.info(`Sent message info ${data}`);
