@@ -42,15 +42,16 @@ const sendMail = async () => {
 (async () => {
   if (!fs.existsSync(SUBJECT_IDS_PATH))
     fs.writeFileSync(SUBJECT_IDS_PATH, JSON.stringify([]));
-  const previousSubjectIds = JSON.parse(fs.readFileSync(SUBJECT_IDS_PATH));
-  const currentSubjectIds = await getSubjectIds();
-  fs.writeFileSync(SUBJECT_IDS_PATH, JSON.stringify(currentSubjectIds));
+  const subjectIds = await Promise.all([
+    fs.promises.readFile(SUBJECT_IDS_PATH),
+    getSubjectIds(),
+  ]);
+  fs.promises.writeFile(SUBJECT_IDS_PATH, JSON.stringify(subjectIds[1]));
+  subjectIds[0] = JSON.parse(subjectIds[0]);
   if (
-    currentSubjectIds.length &&
-    (!previousSubjectIds.length ||
-      previousSubjectIds.some(
-        (element) => !currentSubjectIds.includes(element)
-      ))
+    subjectIds[1].length &&
+    (!subjectIds[0].length ||
+      subjectIds[0].some((element) => !subjectIds[1].includes(element)))
   )
     sendMail();
 })();
