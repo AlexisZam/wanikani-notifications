@@ -20,38 +20,37 @@ const logger = winston.createLogger({
   ],
 });
 
-(async () => {
-  let data;
-
-  if (!fs.existsSync(SUBJECT_IDS_PATH)) {
-    data = JSON.stringify([-1]);
-    fs.writeFileSync(SUBJECT_IDS_PATH, data);
-  }
-
-  data = fs.readFileSync(SUBJECT_IDS_PATH);
-  const previousSubjectIds = JSON.parse(data);
-  logger.info(`Previous subject ids ${data}`);
-
+const getSubjectIds = async () => {
   const response = await axios({
     url: "https://api.wanikani.com/v2/summary",
     headers: { Authorization: `Bearer ${API_TOKEN}` },
   });
-  const currentSubjectIds = response.data.data.reviews[0].subject_ids;
-  data = JSON.stringify(currentSubjectIds);
-  logger.info(`Current subject ids ${data}`);
+  const subjectIds = response.data.data.reviews[0].subject_ids;
+  logger.info(`Subject ids ${JSON.stringify(subjectIds)}`);
+  return subjectIds;
+};
 
+const sendMail = async () => {
+  const mail = nodemailer.createTransport({
+    sendmail: true,
+    path: "/usr/sbin/sendmail",
+  });
+  const info = await mail.sendMail({ to: MAIL_TO, subject: MAIL_SUBJECT });
+  logger.info(`Sent message info ${JSON.stringify(info)}`);
+};
+
+(async () => {
+  if (!fs.existsSync(SUBJECT_IDS_PATH))
+    fs.writeFileSync(SUBJECT_IDS_PATH, JSON.stringify([]));
+  const previousSubjectIds = JSON.parse(fs.readFileSync(SUBJECT_IDS_PATH));
+  const currentSubjectIds = await getSubjectIds();
+  fs.writeFileSync(SUBJECT_IDS_PATH, JSON.stringify(currentSubjectIds));
   if (
     currentSubjectIds.length &&
-    previousSubjectIds.some((element) => !currentSubjectIds.includes(element))
-  ) {
-    fs.writeFileSync(SUBJECT_IDS_PATH, data);
-
-    const mail = nodemailer.createTransport({
-      sendmail: true,
-      path: "/usr/sbin/sendmail",
-    });
-    const info = await mail.sendMail({ to: MAIL_TO, subject: MAIL_SUBJECT });
-    data = JSON.stringify(info);
-    logger.info(`Sent message info ${data}`);
-  }
+    (!previousSubjectIds.length ||
+      previousSubjectIds.some(
+        (element) => !currentSubjectIds.includes(element)
+      ))
+  )
+    sendMail();
 })();
