@@ -30,6 +30,14 @@ const getSubjectIds = async () => {
   return subjectIds;
 };
 
+const reviewsAreAvailable = (previous, current) => {
+  const isSubset = (s, t) => s.every((element) => t.includes(element));
+  return (
+    (!previous.length || !isSubset(previous, current)) &&
+    !isSubset(current, previous)
+  );
+};
+
 const sendMail = async () => {
   const mail = nodemailer.createTransport({
     sendmail: true,
@@ -48,10 +56,7 @@ const sendMail = async () => {
   ]);
   fs.promises.writeFile(SUBJECT_IDS_PATH, JSON.stringify(subjectIds[1]));
   subjectIds[0] = JSON.parse(subjectIds[0]);
-  if (
-    subjectIds[1].length &&
-    (!subjectIds[0].length ||
-      subjectIds[0].some((element) => !subjectIds[1].includes(element)))
-  )
-    sendMail();
+  if (reviewsAreAvailable(...subjectIds)) sendMail();
 })();
+
+export default reviewsAreAvailable;
