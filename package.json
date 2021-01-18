@@ -4,7 +4,7 @@
   "description": "Be notified when WaniKani reviews are available",
   "main": "index.mjs",
   "scripts": {
-    "start": "node -r dotenv/config index.mjs",
+    "start": "node index.mjs",
     "test": "mocha --parallel"
   },
   "repository": {
