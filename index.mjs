@@ -3,7 +3,7 @@ import fs from "fs";
 import nodemailer from "nodemailer";
 import winston from "winston";
 
-const { API_TOKEN, USER, PASS } = process.env;
+const { API_TOKEN, MAIL_TO, PASS } = process.env;
 const MAIL_SUBJECT = "WaniKani reviews are available";
 const SUBJECT_IDS_PATH = "subjectIds.log";
 
@@ -41,9 +41,9 @@ const reviewsAreAvailable = (previous, current) => {
 const sendMail = async () => {
   const mail = nodemailer.createTransport({
     service: "gmail",
-    auth: { user: USER, pass: PASS },
+    auth: { user: MAIL_TO, pass: PASS },
   });
-  const info = await mail.sendMail({ to: USER, subject: MAIL_SUBJECT });
+  const info = await mail.sendMail({ to: MAIL_TO, subject: MAIL_SUBJECT });
   logger.info(`Sent message info ${JSON.stringify(info)}`);
 };
 
