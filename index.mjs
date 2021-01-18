@@ -39,7 +39,7 @@ const reviewsAreAvailable = (previous, current) => {
 };
 
 const sendMail = async () => {
-  const mail = nodemailer.nodemailer.createTransport({
+  const mail = nodemailer.createTransport({
     service: "gmail",
     auth: { user: USER, pass: PASS },
   });
