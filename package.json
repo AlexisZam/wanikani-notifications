@@ -1,5 +1,5 @@
 {
-  "name": "wanikani-reviews",
+  "name": "wanikani-notifications",
   "version": "1.0.0",
   "description": "Be notified when WaniKani reviews are available",
   "main": "index.mjs",
