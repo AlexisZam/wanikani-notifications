@@ -1,9 +1,10 @@
 import axios from "axios";
+import "dotenv/config.js";
 import fs from "fs";
 import nodemailer from "nodemailer";
 import winston from "winston";
 
-const { API_TOKEN, MAIL_TO, PASS } = process.env;
+const { WANIKANI_API_TOKEN, MAIL_USER, MAIL_PASS } = process.env;
 const MAIL_SUBJECT = "WaniKani reviews are available";
 const SUBJECT_IDS_PATH = "subjectIds.log";
 
@@ -23,7 +24,7 @@ const logger = winston.createLogger({
 const getSubjectIds = async () => {
   const response = await axios({
     url: "https://api.wanikani.com/v2/summary",
-    headers: { Authorization: `Bearer ${API_TOKEN}` },
+    headers: { Authorization: `Bearer ${WANIKANI_API_TOKEN}` },
   });
   const subjectIds = response.data.data.reviews[0].subject_ids;
   logger.info(`Subject ids ${JSON.stringify(subjectIds)}`);
@@ -41,9 +42,9 @@ const reviewsAreAvailable = (previous, current) => {
 const sendMail = async () => {
   const mail = nodemailer.createTransport({
     service: "gmail",
-    auth: { user: MAIL_TO, pass: PASS },
+    auth: { user: MAIL_USER, pass: MAIL_PASS },
   });
-  const info = await mail.sendMail({ to: MAIL_TO, subject: MAIL_SUBJECT });
+  const info = await mail.sendMail({ to: MAIL_USER, subject: MAIL_SUBJECT });
   logger.info(`Sent message info ${JSON.stringify(info)}`);
 };
 
