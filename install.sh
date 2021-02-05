@@ -5,12 +5,11 @@ die() {
     exit 1
 }
 
+cd "$(dirname "${BASH_SOURCE[0]}" 2>/dev/null)" || die "Error: Installation failed (cd)"
+
 # requirements
 type node &>/dev/null || die 'Error: Node.js not found'
 type npm &>/dev/null || die 'Error: npm not found'
-
-# cd
-cd "$(dirname "${BASH_SOURCE[0]}" 2>/dev/null)" || die "Error: Installation failed (cd)"
 
 # npm
 npm i -only=prod &>/dev/null || die 'Error: Installation failed (npm)'
@@ -32,12 +31,13 @@ EOF
 read -rp 'Do you want to use cron? [Y/n] ' use_cron
 
 if [[ ! $use_cron || ${use_cron,} == y ]]; then
-    cron="@hourly cd $(pwd 2>/dev/null) && $(type -p node 2>/dev/null) index.mjs"
+    cron_job="@hourly cd $(pwd 2>/dev/null) && $(type -p node 2>/dev/null) index.mjs"
     crontab=$(crontab -l 2>/dev/null)
-    if [[ $crontab != *$cron* ]]; then
-        (
+    if [[ $crontab != *"$cron_job"* ]]; then
+        crontab=$(
             [[ $crontab ]] && echo "$crontab"
-            echo "$cron"
-        ) | crontab || die 'Error: Installation failed (cron)'
+            echo "$cron_job"
+        )
+        crontab <<<"$crontab" || die 'Error: Installation failed (cron)'
     fi
 fi
