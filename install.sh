@@ -1,26 +1,19 @@
 #!/usr/bin/env bash
 
+die() {
+    echo "$1"
+    exit 1
+}
+
 # requirements
-type node &>/dev/null || {
-    echo 'Error: Node.js not found'
-    exit 1
-}
-type npm &>/dev/null || {
-    echo 'Error: npm not found'
-    exit 1
-}
+type node &>/dev/null || die 'Error: Node.js not found'
+type npm &>/dev/null || die 'Error: npm not found'
 
 # cd
-cd "$(dirname "$0" 2>/dev/null)" || {
-    echo "Error: Installation failed (cd)"
-    exit 1
-}
+cd "$(dirname "${BASH_SOURCE[0]}" 2>/dev/null)" || die "Error: Installation failed (cd)"
 
 # npm
-npm i -only=prod &>/dev/null || {
-    echo 'Error: Installation failed (npm)'
-    exit 1
-}
+npm i -only=prod &>/dev/null || die 'Error: Installation failed (npm)'
 
 # .env
 read -rp 'WaniKani Personal Access Token: ' wanikani_api_token
@@ -33,23 +26,18 @@ WANIKANI_API_TOKEN=$wanikani_api_token
 MAIL_USER=$mail_user
 MAIL_PASS=$mail_pass
 EOF
-[[ $? ]] || {
-    echo "Error: Installation failed (.env)"
-    exit 1
-}
+((!$?)) || die "Error: Installation failed (.env)"
 
 # cron
-read -p 'Do you want to use cron? [Y/n] ' -r use_cron
+read -rp 'Do you want to use cron? [Y/n] ' use_cron
 
-[[ -z "$use_cron" || "$use_cron" == 'y' || "$use_cron" == 'Y' ]] && {
-    cron="@hourly cd $(pwd 2>/dev/null) && $(type -p node) index.mjs"
+if [[ ! $use_cron || ${use_cron,} == y ]]; then
+    cron="@hourly cd $(pwd 2>/dev/null) && $(type -p node 2>/dev/null) index.mjs"
     crontab=$(crontab -l 2>/dev/null)
-    grep "$cron" <<<"$crontab" &>/dev/null || (
-        [[ "$crontab" ]] && echo "$crontab"
-        echo "$cron"
-    ) | crontab || {
-        echo 'Error: Installation failed (cron)'
-        exit 1
-    }
-
-}
+    if [[ $crontab != *$cron* ]]; then
+        (
+            [[ $crontab ]] && echo "$crontab"
+            echo "$cron"
+        ) | crontab || die 'Error: Installation failed (cron)'
+    fi
+fi
